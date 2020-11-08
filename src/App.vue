@@ -31,7 +31,7 @@
 
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
-              <md-field :class="getValidationClass('category')">
+              <md-field>
                 <label for="category">Category</label>
                 <md-select name="category" id="category" v-model="form.category" md-dense :disabled="sending">
                   <md-option></md-option>
@@ -40,14 +40,13 @@
                   <md-option value="13">Dining Out</md-option>
                   <md-option value="38">Liquor</md-option>
                 </md-select>
-                <span class="md-error">The category is required</span>
               </md-field>
             </div>
 
             <div class="md-layout-item md-small-size-100">
               <md-field >
                 <label for="date">Date</label>
-                <md-datepicker v-model="selectedDate" md-immediately />
+                <md-datepicker v-model="form.selectedDate" md-immediately />
               </md-field>
             </div>
           </div>
@@ -80,7 +79,7 @@ export default {
         description: null,
         price: null,
         category: null,
-        selectedDate: new Date('now')
+        selectedDate: null
       },
       expenseSaved: false,
       sending: false,
@@ -93,9 +92,6 @@ export default {
         },
         price: {
           required
-        },
-        category: {
-          required,
         }
       }
     },
@@ -122,6 +118,7 @@ export default {
         // Instead of this timeout, here you can call your API
         window.setTimeout(() => {
           // this.lastUser = `${this.form.firstName} ${this.form.lastName}`
+          console.log(this.form);
           this.userSaved = true
           this.sending = false
           this.clearForm()
