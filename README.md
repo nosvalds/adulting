@@ -1,5 +1,16 @@
 # adulting
 
+## Nov 15, 2020
+- Error on POST
+XHRPOSThttp://localhost:8080/proxy/splitwise/create_expense
+[HTTP/1.1 200 OK 835ms]
+
+    1
+
+    {"expenses":[],"errors":{"base":["You must enter an amount"]}}
+
+
+
 ## Project setup
 ```
 npm install
