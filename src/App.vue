@@ -3,7 +3,7 @@
     <md-toolbar class="md-primary">
         <h1 class="md-title">Adulting</h1>
     </md-toolbar>
-    <form novalidate class="md-layout" @submit.prevent="validateExpense">
+    <form v-if="user" novalidate class="md-layout" @submit.prevent="validateExpense">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
           <div class="md-title">New Expense</div>
@@ -21,8 +21,8 @@
 
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('price')">
-                <label for="price">Price</label>
                 <span class="md-prefix">£</span>
+                <label for="price">Price</label>
                 <md-input type="number" name="price" id="price" autocomplete="family-name" v-model="form.price" :disabled="sending" />
                 <span class="md-error" v-if="!$v.form.price.required">The price is required</span>
               </md-field>
@@ -60,8 +60,16 @@
         </md-card-actions>
       </md-card>
 
-      <md-snackbar :md-active.sync="expenseSaved">The expense {{ lastExpense }} was saved with success!</md-snackbar>
+      <md-snackbar v-if="expenseSaved">The expense was saved with success!</md-snackbar>
     </form>
+    <md-card v-else>
+      <md-card-media>
+          <img src="http://dev.splitwise.com/images/logo.svg" alt="splitwise logo">
+      </md-card-media>
+      <md-card-content>
+        <md-button class="md-raised md-accent" @click.prevent="connect">Connect to Splitwise</md-button>
+      </md-card-content>
+    </md-card>
   </div>
 </template>
 
@@ -70,21 +78,29 @@ import { validationMixin } from 'vuelidate'
 import {
   required
 } from 'vuelidate/lib/validators'
+import Pizzly from 'pizzly-js'
+
+const pizzly = new Pizzly({ host: 'pizzly.example.org' }) // Initialize Pizzly
+const myAPI = pizzly.integration('xxx-api-name') // Replace with the API slugname
+
 
 export default {
   name: 'App',
   mixins: [validationMixin],
-  data: () => ({
-    form: {
+  data: () => {
+    let now = new Date();
+    return {
+      user: true,
+      form: {
         description: null,
         price: null,
         category: null,
-        selectedDate: null
+        selectedDate: now
       },
       expenseSaved: false,
       sending: false,
       lastExpense: null
-  }),
+  }},
   validations: {
       form: {
         description: {
@@ -92,7 +108,9 @@ export default {
         },
         price: {
           required
-        }
+        },
+        category: {},
+        selectedDate: {}
       }
     },
     methods: {
@@ -106,23 +124,46 @@ export default {
         }
       },
       clearForm () {
+        let now = new Date();
         this.$v.$reset()
         this.form.description = null
         this.form.price = null
         this.form.category = null
-        this.form.selectedDate = new Date()
+        this.form.selectedDate = now
       },
       saveExpense () {
         this.sending = true
 
+        let split = Number(this.form.price) / 2 ;
+
+        let data = JSON.stringify({
+            "cost": this.form.price,
+            "currency_code": "GBP",
+            "description": this.form.description,
+            "date": this.form.selectedDate.toISOString(),
+            "payment": false,
+            "group_id": "11912464", // adulting
+            "split_equally": true,
+            "users__0__user_id": "906803", // niki
+            "users__0__paid_share": split,
+            "users__0__owed_share": split,
+            "users__1__user_id": "6811318", // heather
+            "users__1__paid_share": split,
+            "users__1__owed_share": split,
+            "category_id": this.form.category  
+        })
+        console.log(data);
         // Instead of this timeout, here you can call your API
-        window.setTimeout(() => {
-          // this.lastUser = `${this.form.firstName} ${this.form.lastName}`
-          console.log(this.form);
-          this.userSaved = true
+        this.$http.post('/create_expense', { "data": data })
+        .then((res) => {
+          console.log(res.status)
+          console.log(res.data)
+          this.expenseSaved = true
           this.sending = false
           this.clearForm()
-        }, 1500)
+        }).catch((error) => {
+          console.log(error);
+        });
       },
       validateExpense () {
         this.$v.$touch()
