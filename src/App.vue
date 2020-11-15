@@ -80,8 +80,8 @@ import {
 } from 'vuelidate/lib/validators'
 import Pizzly from 'pizzly-js'
 
-const pizzly = new Pizzly({ host: 'pizzly.example.org' }) // Initialize Pizzly
-const myAPI = pizzly.integration('xxx-api-name') // Replace with the API slugname
+const pizzly = new Pizzly({ host: 'http://localhost:8080/' }) // Initialize Pizzly
+const splitwise = pizzly.integration('splitwise') // Replace with the API slugname
 
 
 export default {
@@ -90,7 +90,7 @@ export default {
   data: () => {
     let now = new Date();
     return {
-      user: true,
+      user: null,
       form: {
         description: null,
         price: null,
@@ -114,6 +114,12 @@ export default {
       }
     },
     methods: {
+      connect () {
+        splitwise.connect() // connect
+        .then(({ authId }) => console.log("Successfully connected? with the authId:", authId))
+        .catch(err => console.error("It failed", err))
+
+      },
       getValidationClass (fieldName) {
         const field = this.$v.form[fieldName]
 
