@@ -170,8 +170,7 @@ export default {
         .auth(this.userToken)
         .get("/get_current_user")
         .then((data) => {
-          console.log(data);
-          this.userInfo = data;
+          this.userInfo = data.user;
         });
     },
     connectError(err) {
@@ -220,7 +219,10 @@ export default {
       // Call your API
       splitwise
         .auth(this.userToken)
-        .post("/create_expense", { body: JSON.stringify(data) })
+        .post("/create_expense", {
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" },
+        })
         .then((res) => {
           console.log(res.status);
           console.log(res.data);
