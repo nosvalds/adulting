@@ -50,13 +50,18 @@
                 <span class="md-error" v-if="!$v.form.price.required"
                   >The price is required</span
                 >
+                <span
+                  class="md-error"
+                  v-if="$v.form.price.required && !$v.form.price.money"
+                  >Incorrect price format</span
+                >
               </md-field>
             </div>
           </div>
 
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
-              <md-field>
+              <md-field :class="getValidationClass('category')">
                 <label for="category">Category</label>
                 <md-select
                   name="category"
@@ -75,9 +80,9 @@
             </div>
 
             <div class="md-layout-item md-small-size-100">
-              <md-field>
+              <md-field :class="getValidationClass('selectedDate')">
                 <label for="date">Date</label>
-                <md-datepicker v-model="form.selectedDate" md-immediately />
+                <md-datepicker v-model="form.selectedDate" />
               </md-field>
             </div>
           </div>
@@ -109,6 +114,14 @@
         >
       </md-card-content>
     </md-card>
+   <div v-if="arePastExpenses">
+     <h3>Saved Expenses</h3>
+    <md-card v-for="expense in pastExpenses" :key="expense.id">
+      <md-card-content>
+        {{ expense.description }} {{ expense.cost }}
+      </md-card-content>
+    </md-card>
+   </div>
   </div>
 </template>
 
@@ -136,8 +149,14 @@ export default {
       },
       expenseSaved: false,
       sending: false,
-      lastExpense: null,
+      pastExpenses: [],
+      // arePastExpenses:  false
     };
+  },
+  computed: {
+      arePastExpenses: function() {
+      return this.pastExpenses.length > 0
+    }
   },
   validations: {
     form: {
@@ -147,8 +166,12 @@ export default {
       price: {
         required,
       },
-      category: {},
-      selectedDate: {},
+      category: {
+        required
+      },
+      selectedDate: {
+        required
+      },
     },
   },
   methods: {
@@ -197,35 +220,46 @@ export default {
     saveExpense() {
       this.sending = true;
 
-      let split = String(Number(this.form.price) / 2);
+      let total = String(Number.parseFloat(this.form.price).toFixed(2));
+
+      let isOdd = (total * 100) % 2 === 1;
+
+      let share0;
+      let share1;
+      if (isOdd) {
+        share0 = String((total * 100 + 1) / 2 / 100);
+        share1 = String((total * 100 - 1) / 2 / 100);
+      } else {
+        share0 = String(total / 2);
+        share1 = String(total / 2);
+      }
 
       let data = {
-        cost: this.form.price,
+        cost: total,
         currency_code: "GBP",
         description: this.form.description,
         date: this.form.selectedDate.toISOString(),
-        payment: false,
-        group_id: 11912464, // adulting
-        split_equally: true,
-        users__0__user_id: 906803, // niki
-        users__0__paid_share: split,
-        users__0__owed_share: split,
-        users__1__user_id: 6811318, // heather
-        users__1__paid_share: split,
-        users__1__owed_share: split,
+        group_id: "11912464", // adulting
+        users__0__user_id: "906803", // niki
+        users__0__paid_share: share0,
+        users__0__owed_share: share0,
+        users__1__user_id: "6811318", // heather
+        users__1__paid_share: share1,
+        users__1__owed_share: share1,
         category_id: this.form.category,
+        creation_method: "equal",
       };
-      console.log(data);
-      // Call your API
+      // Create Expense through API
       splitwise
         .auth(this.userToken)
         .post("/create_expense", {
           body: JSON.stringify(data),
           headers: { "Content-Type": "application/json" },
         })
-        .then((res) => {
-          console.log(res.status);
-          console.log(res.data);
+        .then(response => response.json())
+        .then((data) => {
+          console.log(data.expenses)
+          this.pastExpenses = data.expenses;
           this.expenseSaved = true;
           this.sending = false;
           this.clearForm();
