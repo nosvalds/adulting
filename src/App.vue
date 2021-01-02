@@ -130,8 +130,9 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import Pizzly from "pizzly-js";
 
-const pizzly = new Pizzly({ host: "http://localhost:8080/" }); // Initialize Pizzly
-const splitwise = pizzly.integration("splitwise"); // Replace with the API slugname
+console.log(process.env.VUE_APP_PIZZLY_URL)
+const pizzly = new Pizzly({ host: process.env.VUE_APP_PIZZLY_URL }); // Initialize Pizzly
+const splitwise = pizzly.integration("splitwise");
 
 export default {
   name: "App",
