@@ -104,7 +104,7 @@
     <md-card v-else>
       <md-card-media>
         <img
-          src="http://dev.splitwise.com/images/logo.svg"
+          src="https://dev.splitwise.com/images/logo.svg"
           alt="splitwise logo"
         />
       </md-card-media>
