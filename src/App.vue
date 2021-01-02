@@ -130,7 +130,6 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import Pizzly from "pizzly-js";
 
-console.log(process.env.VUE_APP_PIZZLY_URL)
 const pizzly = new Pizzly({ host: process.env.VUE_APP_PIZZLY_URL }); // Initialize Pizzly
 const splitwise = pizzly.integration("splitwise");
 
@@ -177,7 +176,6 @@ export default {
   },
   methods: {
     connect() {
-      console.log("Starting Connection");
       splitwise
         .connect() // connect
         .then(this.connectSuccess)
@@ -187,7 +185,6 @@ export default {
     connectSuccess(data) {
       // On success, update user object
       this.userToken = data.authId;
-      console.log("Logged in");
     },
     getUserData() {
       splitwise
@@ -199,7 +196,7 @@ export default {
     },
     connectError(err) {
       console.error(err);
-      alert("Something went wrong. Look at the logs.");
+      alert("Something went wrong. Ask Niki for help.");
     },
     getValidationClass(fieldName) {
       const field = this.$v.form[fieldName];
@@ -259,14 +256,14 @@ export default {
         })
         .then(response => response.json())
         .then((data) => {
-          console.log(data.expenses)
           this.pastExpenses = data.expenses;
           this.expenseSaved = true;
           this.sending = false;
           this.clearForm();
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
+          alert("Something went wrong. Ask Niki for help. " + error)
         });
     },
     validateExpense() {
