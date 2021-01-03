@@ -116,11 +116,20 @@
     </md-card>
    <div v-if="arePastExpenses">
      <h3>Saved Expenses</h3>
-    <md-card v-for="expense in pastExpenses" :key="expense.id">
-      <md-card-content>
-        {{ expense.description }} {{ expense.cost }}
-      </md-card-content>
-    </md-card>
+     <md-table>
+       <md-table-row>
+        <md-table-head>Date</md-table-head>
+        <md-table-head>Category</md-table-head>
+        <md-table-head>Description</md-table-head>
+        <md-table-head>Cost</md-table-head>
+      </md-table-row>
+      <md-table-row v-for="expense in pastExpenses" :key="expense.id">
+        <md-table-cell>{{ new Date(expense.date).toLocaleDateString() }}</md-table-cell>
+        <md-table-cell>{{ expense.category.name }}</md-table-cell>
+        <md-table-cell>{{ expense.description }}</md-table-cell>
+        <md-table-cell>{{ expense.cost }} {{ expense.currency_code }}</md-table-cell>
+      </md-table-row>
+     </md-table>
    </div>
   </div>
 </template>
@@ -150,7 +159,6 @@ export default {
       expenseSaved: false,
       sending: false,
       pastExpenses: [],
-      // arePastExpenses:  false
     };
   },
   computed: {
@@ -256,7 +264,7 @@ export default {
         })
         .then(response => response.json())
         .then((data) => {
-          this.pastExpenses = data.expenses;
+          this.pastExpenses = [...this.pastExpenses].concat(data.expenses)
           this.expenseSaved = true;
           this.sending = false;
           this.clearForm();
