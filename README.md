@@ -1,7 +1,9 @@
 # adulting
 
-## To Do
-
+## Deployment
+```
+npm run deploy
+```
 
 ## Project setup
 ```
