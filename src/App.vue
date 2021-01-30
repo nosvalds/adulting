@@ -228,16 +228,16 @@ export default {
 
       let total = String(Number.parseFloat(this.form.price).toFixed(2));
 
-      let isOdd = (total * 100) % 2 === 1;
+      let isOdd = (Number.parseFloat(total) * 100).toFixed(0) % 2 === 1;
 
       let share0;
       let share1;
       if (isOdd) {
-        share0 = String((total * 100 + 1) / 2 / 100);
-        share1 = String((total * 100 - 1) / 2 / 100);
+        share0 = String(((total * 100 + 1) / 2 / 100).toFixed(2));
+        share1 = String(((total * 100 - 1) / 2 / 100).toFixed(2));
       } else {
-        share0 = String(total / 2);
-        share1 = String(total / 2);
+        share0  = String((total / 2).toFixed(2));
+        share1 = String((total / 2).toFixed(2));
       }
 
       let data = {
@@ -264,10 +264,17 @@ export default {
         })
         .then(response => response.json())
         .then((data) => {
-          this.pastExpenses = [...this.pastExpenses].concat(data.expenses)
-          this.expenseSaved = true;
-          this.sending = false;
-          this.clearForm();
+          if (Object.keys(data.errors).length > 0) {
+            console.error(data.errors.base);
+            alert("Something went wrong. Ask Niki for help. " + data.errors.base)
+            this.expenseSaved = false
+            this.sending = false;
+          } else {
+            this.pastExpenses = [...this.pastExpenses].concat(data.expenses)
+            this.expenseSaved = true;
+            this.sending = false;
+            this.clearForm();
+          }
         })
         .catch((error) => {
           console.error(error);
