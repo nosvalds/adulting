@@ -4,12 +4,16 @@ require('dotenv').config()
 /**
  * This task pushes to the `main` branch of the configured `repo`.
  */
-ghpages.publish(process.env.DEPLOYMENT_DIRECTORY, {
+console.log(typeof process.env.DESTINATION_GIT_URL)
+console.log(typeof process.env.SOURCE_DEPLOYMENT_DIRECTORY)
+console.log(typeof process.env.DESTINATION_GIT_BRANCH)
+
+ghpages.publish(process.env.SOURCE_DEPLOYMENT_DIRECTORY, {
     dotfiles: true,
-    branch: process.env.SOURCE_BRANCH,
-    repo: process.env.DEPLOYMENT_URL
+    branch: process.env.DESTINATION_GIT_BRANCH,
+    repo: process.env.DESTINATION_GIT_URL
   }, (err) => {
       if (err) {
-        console.log(`Error deploying to ${process.env.DEPLOYMENT_URL}: ${err}`)
+        console.log(`Error deploying to ${process.env.DESTINATION_GIT_URL}: ${err}`)
       }
-  });
+    });
