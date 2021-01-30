@@ -3,11 +3,14 @@ node_modules
 /dist
 
 
-# local env files
+# local env files (Vue)
 .env.local
 .env.*.local
 .env.development
 .env.production
+
+# for deploy.js
+.env
 
 # Log files
 npm-debug.log*

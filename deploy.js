@@ -4,9 +4,9 @@ require('dotenv').config()
 /**
  * This task pushes to the `main` branch of the configured `repo`.
  */
-ghpages.publish('dist', {
+ghpages.publish(process.env.DEPLOYMENT_DIRECTORY, {
     dotfiles: true,
-    branch: 'main',
+    branch: process.env.SOURCE_BRANCH,
     repo: process.env.DEPLOYMENT_URL
   }, (err) => {
       if (err) {
