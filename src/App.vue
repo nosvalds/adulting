@@ -5,7 +5,7 @@
       <md-avatar v-if="userInfo">
         <img :src="this.userInfo.picture.small" alt="Splitwise user Avatar" />
       </md-avatar>
-      <h3>{{ this.userInfo.first_name }}</h3>
+      <h3 v-if="userInfo">{{ this.userInfo.first_name }}</h3>
     </md-toolbar>
     <form
       v-if="userToken"
