@@ -72,3 +72,9 @@ npm run lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+# To Do
+
+- Add formatting for different amounts (negative/etc)
+- Refactor into components?
+- Make pretty dial like DigitalHumani?

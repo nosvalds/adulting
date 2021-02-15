@@ -163,6 +163,23 @@
         </md-table-row>
       </md-table>
     </div>
+    <div v-if="budgets">
+      <h3>Budgets for {{ this.date.month }}/{{ this.date.year }}</h3>
+      <md-table md-card>
+        <md-table-row>
+          <md-table-head>Category</md-table-head>
+          <md-table-head>Budget</md-table-head>
+          <md-table-head>Spend</md-table-head>
+          <md-table-head>Remaining</md-table-head>
+        </md-table-row>
+        <md-table-row v-for="budgetItem in budgets" :key="budgetItem.category">
+          <md-table-cell>{{ budgetItem.category }}</md-table-cell>
+          <md-table-cell>{{ budgetItem.budget }}</md-table-cell>
+          <md-table-cell>{{ budgetItem.spend }}</md-table-cell>
+          <md-table-cell>{{ budgetItem.remaining }}</md-table-cell>
+        </md-table-row>
+      </md-table>
+    </div>
   </div>
 </template>
 
@@ -170,6 +187,7 @@
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import Pizzly from "pizzly-js";
+import categoryTotals from "./utils/expensesData";
 
 const pizzly = new Pizzly({ host: process.env.VUE_APP_PIZZLY_URL }); // Initialize Pizzly
 const splitwise = pizzly.integration("splitwise");
@@ -179,7 +197,15 @@ export default {
   mixins: [validationMixin],
   data: () => {
     let now = new Date();
+    const [month, date, year] = new Date()
+      .toLocaleDateString("en-US")
+      .split("/");
     return {
+      date: {
+        month,
+        date,
+        year,
+      },
       userToken: null,
       userInfo: null,
       form: {
@@ -191,6 +217,7 @@ export default {
       expenseSaved: false,
       sending: false,
       pastExpenses: [],
+      budgets: null,
     };
   },
   computed: {
@@ -220,6 +247,7 @@ export default {
         .connect() // connect
         .then(this.connectSuccess)
         .then(this.getUserData)
+        .then(this.getMonthlyExpenses)
         .catch(this.connectError);
     },
     connectSuccess(data) {
@@ -233,6 +261,23 @@ export default {
         .then((response) => response.json())
         .then(async (data) => {
           this.userInfo = data.user;
+        });
+    },
+    getMonthlyExpenses() {
+      const now = new Date();
+      const month = now.getMonth();
+      now.setDate(1);
+      now.setUTCHours(0);
+      now.setUTCMinutes(0);
+      now.setUTCSeconds(0);
+      splitwise
+        .auth(this.userToken)
+        .get(
+          `/get_expenses?visible=true&order=date&group_id=11912464&limit=100`
+        )
+        .then((response) => response.json())
+        .then(async (data) => {
+          this.budgets = categoryTotals(data, month);
         });
     },
     connectError(err) {
@@ -306,6 +351,24 @@ export default {
             this.sending = false;
           } else {
             this.pastExpenses = [...this.pastExpenses].concat(data.expenses);
+
+            // add to budget table
+            this.budgets = this.budgets.map((category) => {
+              if (this.form.category == category.id) {
+                return {
+                  ...category,
+                  spend: (
+                    Number.parseFloat(category.spend) + Number.parseFloat(total)
+                  ).toFixed(2),
+                  remaining: (
+                    Number.parseFloat(category.remaining) -
+                    Number.parseFloat(total)
+                  ).toFixed(2),
+                };
+              } else {
+                return { ...category };
+              }
+            });
             this.expenseSaved = true;
             this.sending = false;
             this.clearForm();
