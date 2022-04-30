@@ -27,16 +27,20 @@ const categoryTotals = (data, month) => {
         id = 23;
         break;
       case "Groceries":
-        budget = 325;
+        budget = 300;
         id = 12;
         break;
       case "Dining out":
-        budget = 100;
+        budget = 125;
         id = 13;
         break;
       case "Liquor":
         budget = 125;
         id = 38;
+        break;
+      case "Food and drink - Other":
+        budget = 15;
+        id = 26;
         break;
       default:
         break;
