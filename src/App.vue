@@ -76,6 +76,7 @@
                   <md-option value="23">Entertainment</md-option>
                   <md-option value="13">Dining Out</md-option>
                   <md-option value="38">Liquor</md-option>
+                  <md-option value="26">Milk</md-option>
                 </md-select>
               </md-field>
             </div>
