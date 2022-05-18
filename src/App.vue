@@ -216,7 +216,14 @@ export default {
       sending: false,
       pastExpenses: [],
       budgets: null,
-      commonDescriptions: ["Preserve", "Aldi", "Tesco", "Lidl"],
+      commonDescriptions: [
+        "Preserve",
+        "Aldi",
+        "Tesco",
+        "Lidl",
+        "Sweetmart",
+        "Pats",
+      ],
     };
   },
   computed: {
