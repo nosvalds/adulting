@@ -1,4 +1,4 @@
-s<template>
+<template>
   <div id="app">
     <md-toolbar class="md-primary">
       <h1 class="md-title">Adulting</h1>
