@@ -1,4 +1,4 @@
-<template>
+s<template>
   <div id="app">
     <md-toolbar class="md-primary">
       <h1 class="md-title">Adulting</h1>
@@ -22,14 +22,14 @@
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('description')">
-                <label for="description">Description</label>
-                <md-input
+                <md-autocomplete
                   name="description"
                   id="description"
-                  autocomplete="given-name"
+                  :md-options="commonItems"
                   v-model="form.description"
                   :disabled="sending"
-                />
+                  ><label for="description">Description</label></md-autocomplete
+                >
                 <span class="md-error" v-if="!$v.form.description.required"
                   >The description name is required</span
                 >
@@ -44,7 +44,6 @@
                   type="number"
                   name="price"
                   id="price"
-                  autocomplete="family-name"
                   v-model="form.price"
                   :disabled="sending"
                 />
@@ -61,23 +60,22 @@
           </div>
 
           <div class="md-layout md-gutter">
-            <div class="md-layout-item md-small-size-100">
+            <div class="md-layout-item md-xsmall-size-100">
               <md-field :class="getValidationClass('category')">
-                <label for="category">Category</label>
-                <md-select
-                  name="category"
-                  id="category"
-                  v-model="form.category"
-                  md-dense
-                  :disabled="sending"
-                >
-                  <md-option></md-option>
-                  <md-option value="12">Groceries</md-option>
-                  <md-option value="23">Entertainment</md-option>
-                  <md-option value="13">Dining Out</md-option>
-                  <md-option value="38">Liquor</md-option>
-                  <md-option value="26">Milk</md-option>
-                </md-select>
+                <div>
+                  <md-radio class="radio" v-model="form.category" value="12"
+                    >Groceries</md-radio
+                  >
+                  <md-radio class="radio" v-model="form.category" value="23"
+                    >Entertainment</md-radio
+                  >
+                  <md-radio class="radio" v-model="form.category" value="13"
+                    >Dining Out</md-radio
+                  >
+                  <md-radio class="radio" v-model="form.category" value="38"
+                    >Liquor</md-radio
+                  >
+                </div>
               </md-field>
             </div>
 
@@ -219,6 +217,7 @@ export default {
       sending: false,
       pastExpenses: [],
       budgets: null,
+      commonItems: ["Preserve", "Aldi", "Tesco", "Lidl"],
     };
   },
   computed: {
@@ -399,5 +398,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.radio {
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 </style>
