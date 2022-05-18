@@ -56,20 +56,3 @@ const categoryTotals = (data, month) => {
 };
 
 export default categoryTotals;
-
-// "category": {
-//   "id": 23,
-//   "name": "Entertainment - Other"
-// }
-//  "category": {
-//   "id": 12,
-//   "name": "Groceries"
-// }
-// "category": {
-//   "id": 13,
-//   "name": "Dining out"
-// }
-// "category": {
-//   "id": 38,
-//   "name": "Liquor"
-// }
