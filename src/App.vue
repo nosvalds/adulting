@@ -21,19 +21,18 @@ s<template>
         <md-card-content>
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
-              <md-field :class="getValidationClass('description')">
-                <md-autocomplete
-                  name="description"
-                  id="description"
-                  :md-options="commonItems"
-                  v-model="form.description"
-                  :disabled="sending"
-                  ><label for="description">Description</label></md-autocomplete
-                >
+              <md-autocomplete
+                name="description"
+                id="description"
+                :class="getValidationClass('description')"
+                :md-options="commonDescriptions"
+                v-model="form.description"
+                :disabled="sending"
+                ><label for="description">Description</label>
                 <span class="md-error" v-if="!$v.form.description.required"
                   >The description name is required</span
                 >
-              </md-field>
+              </md-autocomplete>
             </div>
 
             <div class="md-layout-item md-small-size-100">
@@ -217,7 +216,7 @@ export default {
       sending: false,
       pastExpenses: [],
       budgets: null,
-      commonItems: ["Preserve", "Aldi", "Tesco", "Lidl"],
+      commonDescriptions: ["Preserve", "Aldi", "Tesco", "Lidl"],
     };
   },
   computed: {
