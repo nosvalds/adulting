@@ -2,6 +2,7 @@
   <div id="app">
     <md-toolbar class="md-primary">
       <h1 class="md-title">Adulting</h1>
+      <p class="md-body-1">v{{ version }}</p>
       <md-avatar v-if="userInfo">
         <img :src="this.userInfo.picture.small" alt="Splitwise user Avatar" />
       </md-avatar>
@@ -186,6 +187,7 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import Pizzly from "pizzly-js";
 import categoryTotals from "./utils/expensesData";
+import { version } from "../package.json";
 
 const pizzly = new Pizzly({ host: process.env.VUE_APP_PIZZLY_URL }); // Initialize Pizzly
 const splitwise = pizzly.integration("splitwise");
@@ -199,6 +201,7 @@ export default {
       .toLocaleDateString("en-US")
       .split("/");
     return {
+      version: version,
       date: {
         month,
         date,
@@ -408,5 +411,8 @@ export default {
 .radio {
   padding: 1rem;
   margin-bottom: 1rem;
+}
+.md-body-1 {
+  margin-left: 1rem;
 }
 </style>
