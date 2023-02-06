@@ -23,19 +23,19 @@ const categoryTotals = (data, month) => {
     let id;
     switch (category) {
       case "Entertainment - Other":
-        budget = 100;
+        budget = 200;
         id = 23;
         break;
       case "Groceries":
-        budget = 300;
+        budget = 500;
         id = 12;
         break;
       case "Dining out":
-        budget = 125;
+        budget = 200;
         id = 13;
         break;
       case "Liquor":
-        budget = 125;
+        budget = 200;
         id = 38;
         break;
       case "Food and drink - Other":

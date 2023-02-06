@@ -38,7 +38,7 @@
 
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('price')">
-                <span class="md-prefix">£</span>
+                <span class="md-prefix">C$</span>
                 <label for="price">Price</label>
                 <md-input
                   type="number"
@@ -219,14 +219,7 @@ export default {
       sending: false,
       pastExpenses: [],
       budgets: null,
-      commonDescriptions: [
-        "Preserve",
-        "Aldi",
-        "Tesco",
-        "Lidl",
-        "Sweetmart",
-        "Pats",
-      ],
+      commonDescriptions: ["IGA", "Provigo", "SAQ"],
     };
   },
   computed: {
@@ -329,7 +322,7 @@ export default {
 
       let data = {
         cost: total,
-        currency_code: "GBP",
+        currency_code: "CAD",
         description: this.form.description,
         date: this.form.selectedDate.toISOString(),
         group_id: "11912464", // adulting
